@@ -36,7 +36,7 @@ public class TurretPlasma : MonoBehaviour
     GameObject _target;
     Transform _platform;
     Transform _launcher;
-    
+	
     Vector3 _aimPoint;
     float _lastSeenTime;
     float _lockResetTime;
@@ -65,13 +65,17 @@ public class TurretPlasma : MonoBehaviour
             _lastSeenTime = Time.fixedTime;
             
             // compute lead
-            var rocketTimeToTarget = vect.magnitude / 100;
+            var rocketTimeToTarget = vect.magnitude / 75;
             _aimPoint = _target.transform.position + (_target.rigidbody.velocity * rocketTimeToTarget);
+
+			// aim above target for lobbing
+			var dist = new Vector3(vect.x, 0, vect.z).magnitude;
+			_aimPoint += Vector3.up * dist * dist / 1000;
             RotateTowards(_aimPoint);
             
             var aimVect = _aimPoint - _launcher.position;
-            _lockAngle = Vector3.Angle(_launcher.forward, aimVect);
-            if(_lockAngle <= LockSize && Utility.CanSeePoint(_launcher.transform.position, _aimPoint, _target))
+            var lockAngle = Vector3.Angle(_launcher.forward, aimVect);
+            if(lockAngle <= LockSize && Utility.CanSeePoint(_launcher.transform.position, _aimPoint, _target))
             {
                 Debug.DrawLine(_launcher.position, _aimPoint, Color.green);
                 if(aimVect.magnitude <= FiringRange // in range
@@ -124,14 +128,6 @@ public class TurretPlasma : MonoBehaviour
         Physics.IgnoreCollision(collider, clone.collider);
         clone.transform.rotation = _launcher.rotation;
         clone.rigidbody.AddForce(clone.transform.forward * 100, ForceMode.Impulse);
-    }
-    
-    float _lockAngle;
-    void OnGUI()
-    {
-        if(this.name == "turret_flak")
-            GUI.TextArea(new Rect(120, 20, 100, 20), "Angle: " + _lockAngle, Utility.BasicGuiStyle);
-        
     }
     
     void ApplyDamage(float amount)

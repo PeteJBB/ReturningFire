@@ -21,8 +21,10 @@ public class PlasmaShot : MonoBehaviour {
         if(rigidbody.velocity.magnitude > 0)
             transform.rotation = Quaternion.LookRotation(rigidbody.velocity);
         var age = Time.fixedTime - _birthday;
-        if(age > _lifeTime)
+        if(age >= _lifeTime)
             Destroy(gameObject);
+		else
+			transform.localScale = Vector3.one * (1 - (age/_lifeTime));
 
 
 	}
