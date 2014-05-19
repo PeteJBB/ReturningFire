@@ -42,6 +42,8 @@ public class TurretMissile : MonoBehaviour
     float _lockResetTime;
     float _lastShootTime;
     
+	GameObject _hud;
+
     float _health;
     
     // Use this for initialization
@@ -52,6 +54,8 @@ public class TurretMissile : MonoBehaviour
         _target = GameObject.FindGameObjectWithTag("Player");
         _platform = transform.FindChild("platform");
         _launcher = _platform.FindChild("launcher");
+
+		_hud = GameObject.FindGameObjectWithTag("HUD");
     }
     
     // Update is called once per frame
@@ -61,7 +65,9 @@ public class TurretMissile : MonoBehaviour
         if(vect.magnitude <= DetectionRange 
            && Utility.CanObjectSeeAnother(_launcher.gameObject, _target))
         {
-            // can see target   
+			// can see target  
+			_hud.SendMessage("Detected", gameObject, SendMessageOptions.DontRequireReceiver);
+
             _lastSeenTime = Time.fixedTime;
             
             // compute lead

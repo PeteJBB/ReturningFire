@@ -14,6 +14,10 @@ public class RadarScreen : MonoBehaviour
     GameObject _player;
 
     List<GameObject> detectedObjects = new List<GameObject>();
+	List<GameObject> detectedBy = new List<GameObject>();
+
+	float _warningClearTimer = 1;
+	float _lastClearedWarning;
 
     // Use this for initialization
     void Start()
@@ -24,7 +28,12 @@ public class RadarScreen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        detectedObjects.Clear();
+		if(Time.fixedTime - _lastClearedWarning > _warningClearTimer)
+		{
+			detectedBy.Clear();
+			_lastClearedWarning = Time.fixedTime;
+		}
+		detectedObjects.Clear();
         foreach(var col in Physics.OverlapSphere(_player.transform.position, _radarRange))
         {
             if(col.gameObject.tag == "Enemy")
@@ -33,6 +42,12 @@ public class RadarScreen : MonoBehaviour
             }
         }
     }
+
+	void Detected(GameObject enemy)
+	{
+		if(!detectedBy.Contains(enemy))
+			detectedBy.Add(enemy);
+	}
 
     void OnGUI()
     {
@@ -72,6 +87,10 @@ public class RadarScreen : MonoBehaviour
                 {
                     var blipRect = Utility.GetCenteredRectangle(radarRect.center + point, 8, 8);
                     GUI.DrawTexture(blipRect, BlipTexture);
+					if(detectedBy.Contains(obj))
+					{
+						Drawing.DrawLine(radarRect.center, blipRect.center, Color.yellow, 1f, true);
+					}
                 }
             }
         }

@@ -3,16 +3,23 @@ using System.Collections;
 
 public class PlasmaShot : MonoBehaviour {
 
-    float _lifeTime = 20;
+    float _lifeTime = 3;
     float _birthday;
     GameObject _parentObject; // who fired me?
     Transform _smoke;
+	Transform _plasma;
+	Transform _particles;
+
+	float _maxDamage = 10;
+	float _damageScale = 1;
 
 	// Use this for initialization
 	void Start ()
     {
         _birthday = Time.fixedTime;
         _smoke = transform.Find("smoke");
+		_plasma = transform.Find ("plasma");
+		_particles = transform.Find ("particles");
 	}
 	
 	// Update is called once per frame
@@ -20,13 +27,18 @@ public class PlasmaShot : MonoBehaviour {
     {
         if(rigidbody.velocity.magnitude > 0)
             transform.rotation = Quaternion.LookRotation(rigidbody.velocity);
+
         var age = Time.fixedTime - _birthday;
         if(age >= _lifeTime)
-            Destroy(gameObject);
+		{
+			Destroy(gameObject);
+		}
 		else
-			transform.localScale = Vector3.one * (1 - (age/_lifeTime));
-
-
+		{
+			_damageScale =  1 - (age/_lifeTime);
+			_plasma.localScale = Vector3.one * _damageScale;
+			_particles.particleSystem.startSize = _damageScale;
+		}  
 	}
 
     void OnDestroy()
@@ -47,10 +59,13 @@ public class PlasmaShot : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        if(collider.gameObject != _parentObject)
+		if(other.gameObject != _parentObject)
         {
             // move back along path a bit to help with explosions
             transform.position -= (transform.forward * 2);
+			var damage = _damageScale * _maxDamage;
+			Debug.Log(other.gameObject);
+			other.gameObject.SendMessage("ApplyDamage", damage, SendMessageOptions.DontRequireReceiver);
             Explode();
         }
     }

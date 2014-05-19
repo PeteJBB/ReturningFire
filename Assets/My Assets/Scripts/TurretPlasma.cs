@@ -38,10 +38,13 @@ public class TurretPlasma : MonoBehaviour
     Transform _launcher;
 	
     Vector3 _aimPoint;
+	bool _canSeeTarget;
     float _lastSeenTime;
     float _lockResetTime;
     float _lastShootTime;
     
+	GameObject _hud;
+
     float _health;
     
     // Use this for initialization
@@ -52,6 +55,8 @@ public class TurretPlasma : MonoBehaviour
         _target = GameObject.FindGameObjectWithTag("Player");
         _platform = transform.FindChild("platform");
         _launcher = _platform.FindChild("launcher");
+
+		_hud = GameObject.FindGameObjectWithTag("HUD");
     }
     
     // Update is called once per frame
@@ -61,7 +66,10 @@ public class TurretPlasma : MonoBehaviour
         if(vect.magnitude <= DetectionRange 
            && Utility.CanObjectSeeAnother(_launcher.gameObject, _target))
         {
-            // can see target   
+            // can see target  
+			_hud.SendMessage("Detected", gameObject, SendMessageOptions.DontRequireReceiver);
+
+			_canSeeTarget = true;
             _lastSeenTime = Time.fixedTime;
             
             // compute lead
@@ -93,7 +101,9 @@ public class TurretPlasma : MonoBehaviour
         }
         else
         {
-            if(Time.fixedTime - _lastSeenTime > AttentionSpan)
+			_canSeeTarget = false;
+
+			if(Time.fixedTime - _lastSeenTime > AttentionSpan)
             {
                 // pick a new random aim point and wander
                 _aimPoint = _launcher.transform.position + new Vector3(Random.Range(-500, 500), Random.Range(-50, 50), Random.Range(-500, 500));

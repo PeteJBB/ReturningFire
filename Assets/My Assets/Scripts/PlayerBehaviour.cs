@@ -72,7 +72,7 @@ public class PlayerBehaviour : MonoBehaviour
             var thrustAngle = Mathf.Deg2Rad * Vector3.Angle(Physics.gravity, -transform.up);
             var energy = (rigidbody.mass * Physics.gravity.magnitude) - (rigidbody.velocity.y * Mathf.Abs(rigidbody.velocity.y));
             var thrustNeeded = energy / Mathf.Cos(thrustAngle);
-            collective = Mathf.Clamp(thrustNeeded / EnginePower, 0, 100);
+            collective = Mathf.Clamp(thrustNeeded / EnginePower, 0, 1);
         }
 
         this.rigidbody.AddRelativeForce(new Vector3(0, EnginePower * collective * deltaMultiplier, 0));

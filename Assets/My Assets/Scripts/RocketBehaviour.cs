@@ -89,7 +89,7 @@ public class RocketBehaviour : MonoBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
-        if(collider.gameObject != _parentObject)
+        if(other.gameObject != _parentObject)
         {
             // move back along path a bit to help with explosions
             transform.position -= (transform.forward * 2);
