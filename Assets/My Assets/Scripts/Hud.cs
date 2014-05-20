@@ -84,7 +84,7 @@ public class Hud : MonoBehaviour {
         GUI.DrawTexture(Utility.GetCenteredRectangle(center, CenterTexture.width, CenterTexture.height), CenterTexture);
 
         // slip
-        var slipCenter = new Vector2(center.x, Screen.height - 148);
+        var slipCenter = new Vector2(center.x, Screen.height - 60);
         Drawing.DrawLine(slipCenter, slipCenter + slipVector, Color.white, 1f, true);
 
         GUI.DrawTexture(Utility.GetCenteredRectangle(slipCenter + slipVector, SlipTexture.width, SlipTexture.height), SlipTexture);

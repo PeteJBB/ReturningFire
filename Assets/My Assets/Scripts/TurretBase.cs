@@ -2,10 +2,7 @@
 using System.Collections;
 
 public class TurretBase : MonoBehaviour 
-{
-	[SerializeField]
-	protected float DetectionRange = 100;
-	
+{	
 	[SerializeField]
 	protected float FiringRange = 80;
 	
@@ -32,8 +29,7 @@ public class TurretBase : MonoBehaviour
 	
 	[SerializeField]
 	protected GameObject Projectile;
-	
-	protected GameObject _target;
+
 	protected Transform _platform;
 	protected Transform _launcher;
 	
@@ -41,36 +37,31 @@ public class TurretBase : MonoBehaviour
 	protected float _lastSeenTime;
 	protected float _lockResetTime;
 	protected float _lastShootTime;
-	
-	protected GameObject _hud;
-	protected bool _canSeeTarget;
-	
+
 	protected float _health;
+	protected Detector _detector;
+	protected GameObject _player;
 	
 	// Use this for initialization
 	protected void Start () 
 	{
 		_health = MaxHealth;
-		
-		_target = GameObject.FindGameObjectWithTag("Player");
+
 		_platform = transform.FindChild("platform");
 		_launcher = _platform.FindChild("launcher");
-		
-		_hud = GameObject.FindGameObjectWithTag("HUD");
+		_detector = gameObject.GetComponent<Detector>();
+		_player = GameObject.FindGameObjectWithTag("Player");
 	}
 	
 	// Update is called once per frame
 	protected void Update () 
 	{
-		var vect = _target.transform.position - _launcher.position; 
-		if(vect.magnitude <= DetectionRange 
-		   && Utility.CanObjectSeeAnother(_launcher.gameObject, _target))
+		_detector.Origin = _launcher.transform.position;
+
+		if(_detector.CanSeePlayer)
 		{
-			// can see target 
-			if(!_canSeeTarget)
-				_hud.SendMessage("Detected", gameObject, SendMessageOptions.DontRequireReceiver);
+			var vect = _player.transform.position - _launcher.position;
 			_lastSeenTime = Time.fixedTime;
-			_canSeeTarget = true;
 
 			// compute lead
 			_aimPoint = CalculateAimPoint();
@@ -78,7 +69,7 @@ public class TurretBase : MonoBehaviour
 			
 			var aimVect = _aimPoint - _launcher.position;
 			var angle = Vector3.Angle(_launcher.forward, aimVect);
-			if(angle <= LockSize && Utility.CanSeePoint(_launcher.transform.position, _aimPoint, _target))
+			if(angle <= LockSize && Utility.CanSeePoint(_launcher.transform.position, _aimPoint, _player))
 			{
 				Debug.DrawLine(_launcher.position, _aimPoint, Color.green);
 				if(aimVect.magnitude <= FiringRange // in range
@@ -96,12 +87,7 @@ public class TurretBase : MonoBehaviour
 		}
 		else
 		{
-			if(_canSeeTarget)
-			{
-				_canSeeTarget = false;
-				_hud.SendMessage("Undetected", gameObject, SendMessageOptions.DontRequireReceiver);
-			}
-			else if(Time.fixedTime - _lastSeenTime > AttentionSpan)
+			if(Time.fixedTime - _lastSeenTime > AttentionSpan)
 			{
 				// pick a new random aim point and wander
 				_aimPoint = _launcher.transform.position + new Vector3(Random.Range(-500, 500), Random.Range(-50, 50), Random.Range(-500, 500));
@@ -113,9 +99,9 @@ public class TurretBase : MonoBehaviour
 
 	protected virtual Vector3 CalculateAimPoint()
 	{
-		var vect = _target.transform.position - _launcher.position;
+		var vect = _player.transform.position - _launcher.position;
 		var rocketTimeToTarget = vect.magnitude / 100;
-		var aim = _target.transform.position + (_target.rigidbody.velocity * rocketTimeToTarget);
+		var aim = _player.transform.position + (_player.rigidbody.velocity * rocketTimeToTarget);
 		return aim;
 	}
 	

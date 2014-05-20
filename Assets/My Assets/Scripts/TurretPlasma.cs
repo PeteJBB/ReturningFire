@@ -5,11 +5,11 @@ public class TurretPlasma : TurretBase
 {
 	protected override Vector3 CalculateAimPoint()
 	{
-		var vect = _target.transform.position - _launcher.position; 
+		var vect = _player.transform.position - _launcher.position; 
 
 		// compute lead
 		var rocketTimeToTarget = vect.magnitude / 75;
-		var aim = _target.transform.position + (_target.rigidbody.velocity * rocketTimeToTarget);
+		var aim = _player.transform.position + (_player.rigidbody.velocity * rocketTimeToTarget);
 		
 		// aim above target for lobbing
 		var dist = new Vector3(vect.x, 0, vect.z).magnitude;

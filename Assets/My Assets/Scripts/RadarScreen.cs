@@ -24,9 +24,6 @@ public class RadarScreen : MonoBehaviour
 
     GameObject _player;
 
-    List<GameObject> detectedObjects = new List<GameObject>();
-	List<GameObject> detectedBy = new List<GameObject>();
-
 	float _warningClearTimer = 1;
 	float _lastClearedWarning;
 
@@ -50,42 +47,15 @@ public class RadarScreen : MonoBehaviour
     {
 		_mapCamera.transform.position = new Vector3(_player.transform.position.x, 250, _player.transform.position.z);
 		_mapCamera.transform.rotation = Quaternion.Euler(90, _player.transform.rotation.eulerAngles.y, 0);
-
-//		if(Time.fixedTime - _lastClearedWarning > _warningClearTimer)
-//		{
-//			detectedBy.Clear();
-//			_lastClearedWarning = Time.fixedTime;
-//		}
-		detectedObjects.Clear();
-        foreach(var col in Physics.OverlapSphere(_player.transform.position, _radarRange))
-        {
-            if(col.gameObject.tag == "Enemy")
-            {
-                detectedObjects.Add(col.gameObject);
-            }
-        }
     }
-
-	// message reciever - enemy can see you!
-	void Detected(GameObject enemy)
-	{
-		if(!detectedBy.Contains(enemy))
-			detectedBy.Add(enemy);
-	}
-
-	// message reciever - enemy has lost sight of you
-	void Undetected(GameObject enemy)
-	{
-		if(detectedBy.Contains(enemy))
-			detectedBy.Remove(enemy);
-	}
 
     void OnGUI()
     {
 		var radarRect = new Rect(Screen.width - RadarSize.x - 10, 10, RadarSize.x, RadarSize.y);
 
 		// draw background
-		Graphics.DrawTexture(radarRect, BackgroundTexture, BackgroundMaterial);
+		if(Event.current.type == EventType.Repaint)
+			Graphics.DrawTexture(radarRect, BackgroundTexture, BackgroundMaterial);
 
 		// draw overlay
 		GUI.DrawTexture(radarRect, OverlayTexture);
@@ -115,7 +85,8 @@ public class RadarScreen : MonoBehaviour
 				var point = new Vector2(bX, bY) * scale;
 
 	            var blipRect = Utility.GetCenteredRectangle(radarRect.center + point, 12, 12);
-				if(detectedBy.Contains(obj))
+				var detector = obj.GetComponent<Detector>();
+				if(detector.CanSeePlayer)
 				{
 					GUI.color = Color.yellow;
 		            GUI.DrawTexture(blipRect, BlipTexture);
