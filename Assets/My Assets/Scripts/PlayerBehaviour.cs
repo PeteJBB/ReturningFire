@@ -158,7 +158,7 @@ public class PlayerBehaviour : MonoBehaviour
         if(_blurEffect.enabled)
         {
             var time = Time.fixedTime - _lastHitTime;
-            var blurTime = 1;
+            var blurTime = 0.5f;
             if(time >= blurTime)
                 _blurEffect.enabled = false;
             else

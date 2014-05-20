@@ -43,14 +43,13 @@ public class TurretBase : MonoBehaviour
 	protected float _lastShootTime;
 	
 	protected GameObject _hud;
+	protected bool _canSeeTarget;
 	
 	protected float _health;
 	
 	// Use this for initialization
 	protected void Start () 
 	{
-		Debug.Log("Base start");
-
 		_health = MaxHealth;
 		
 		_target = GameObject.FindGameObjectWithTag("Player");
@@ -63,15 +62,16 @@ public class TurretBase : MonoBehaviour
 	// Update is called once per frame
 	protected void Update () 
 	{
-		Debug.Log("Base Update");
 		var vect = _target.transform.position - _launcher.position; 
 		if(vect.magnitude <= DetectionRange 
 		   && Utility.CanObjectSeeAnother(_launcher.gameObject, _target))
 		{
-			// can see target  
-			_hud.SendMessage("Detected", gameObject, SendMessageOptions.DontRequireReceiver);
+			// can see target 
+			if(!_canSeeTarget)
+				_hud.SendMessage("Detected", gameObject, SendMessageOptions.DontRequireReceiver);
 			_lastSeenTime = Time.fixedTime;
-			
+			_canSeeTarget = true;
+
 			// compute lead
 			_aimPoint = CalculateAimPoint();
 			RotateTowards(_aimPoint);
@@ -96,7 +96,12 @@ public class TurretBase : MonoBehaviour
 		}
 		else
 		{
-			if(Time.fixedTime - _lastSeenTime > AttentionSpan)
+			if(_canSeeTarget)
+			{
+				_canSeeTarget = false;
+				_hud.SendMessage("Undetected", gameObject, SendMessageOptions.DontRequireReceiver);
+			}
+			else if(Time.fixedTime - _lastSeenTime > AttentionSpan)
 			{
 				// pick a new random aim point and wander
 				_aimPoint = _launcher.transform.position + new Vector3(Random.Range(-500, 500), Random.Range(-50, 50), Random.Range(-500, 500));

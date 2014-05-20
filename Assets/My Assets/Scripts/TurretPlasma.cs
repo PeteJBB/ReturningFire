@@ -3,13 +3,6 @@ using System.Collections;
 
 public class TurretPlasma : TurretBase 
 {
-    // Use this for initialization
-    void Start () 
-    {
-		Debug.Log("Plasma start");
-		base.Start();
-    }
-    
 	protected override Vector3 CalculateAimPoint()
 	{
 		var vect = _target.transform.position - _launcher.position; 
