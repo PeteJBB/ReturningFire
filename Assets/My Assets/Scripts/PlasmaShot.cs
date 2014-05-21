@@ -64,7 +64,6 @@ public class PlasmaShot : MonoBehaviour {
             // move back along path a bit to help with explosions
             transform.position -= (transform.forward * 2);
 			var damage = _damageScale * _maxDamage;
-			Debug.Log(other.gameObject);
 			other.gameObject.SendMessage("ApplyDamage", damage, SendMessageOptions.DontRequireReceiver);
             Explode();
         }

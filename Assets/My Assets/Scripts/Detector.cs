@@ -7,10 +7,9 @@ public class Detector : MonoBehaviour
 	float DetectionRange = 200;
 
 	[SerializeField]
-	float ScanDelay = 1;
+	public float ScanDelay = 1;
 
-	private bool _canSeePlayer = false;
-	public bool CanSeePlayer { get { return _canSeePlayer; } }
+	public bool CanSeePlayer { get; set; }
 	public Vector3 Origin { get; set; }
 
 	private GameObject _player;
@@ -29,7 +28,7 @@ public class Detector : MonoBehaviour
 		{
 			// scan
 			var vect = _player.transform.position - Origin; 
-			_canSeePlayer = vect.magnitude <= DetectionRange && Utility.CanSeePoint(Origin, _player.transform.position, _player);
+			CanSeePlayer = vect.magnitude <= DetectionRange && Utility.CanSeePoint(Origin, _player.transform.position, _player);
 			_lastScanTime = Time.fixedTime;
 		}
 	}

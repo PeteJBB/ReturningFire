@@ -13,6 +13,30 @@ public class Utility {
         }
     };
 
+	public static Vector2 ScreenCenter()
+	{
+		return new Vector2(Screen.width / 2f, Screen.height / 2f);
+	}
+
+	public static void DrawRotatedGuiTexture(Rect rect, float angle, Texture texture)
+	{
+		Matrix4x4 matrixBackup = GUI.matrix;
+		GUIUtility.RotateAroundPivot(angle, rect.center);
+		GUI.DrawTexture(rect, texture);
+		GUI.matrix = matrixBackup;
+	}
+
+	public static void DrawRotatedGuiTexture(Rect screenRect, float angle, Texture texture, Rect srcRect)
+	{
+		if(Event.current.type == EventType.Repaint)
+		{
+			Matrix4x4 matrixBackup = GUI.matrix;
+			GUIUtility.RotateAroundPivot(angle, screenRect.center);
+			Graphics.DrawTexture(screenRect, texture, srcRect, 0, 0, 0, 0);
+			GUI.matrix = matrixBackup;
+		}
+	}
+
     public static bool CanSeePoint(Vector3 from, Vector3 to, GameObject target)
     {
         RaycastHit hitInfo;
