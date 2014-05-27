@@ -16,19 +16,15 @@ public class FlightControls : MonoBehaviour
     float EnginePower = 400;
 
     float _collective; // what the pilot has set
-
     Vector3 dragVector; // the calculated drag this frame
-
     float deltaMultiplier;
-
-    BlurEffect _blurEffect;
     float _lastHitTime;
  
 
     // Use this for initialization
     void Start()
     {
-        _blurEffect = Camera.main.GetComponent<BlurEffect>();
+        
     }
 
     // Update is called once per frame
@@ -36,16 +32,6 @@ public class FlightControls : MonoBehaviour
     {
         deltaMultiplier = Time.deltaTime / 0.02f;
         UpdateFlightControls();
-        
-		if(_blurEffect.enabled)
-		{
-			var time = Time.fixedTime - _lastHitTime;
-			var blurTime = 0.5f;
-			if(time >= blurTime)
-				_blurEffect.enabled = false;
-			else
-				_blurEffect.blurSpread = 1 - time/blurTime;
-		}
 
         // reset
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -127,8 +113,6 @@ public class FlightControls : MonoBehaviour
     {
         print("You've been hit! (" + amount + ")");
         _lastHitTime = Time.fixedTime;
-        _blurEffect.enabled = true;
-        _blurEffect.blurSpread = 1;
     }
 
     void OnGUI()

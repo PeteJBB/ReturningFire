@@ -40,7 +40,7 @@ public class HudBasics : MonoBehaviour
 		var offset = ((-pitch % 180) / 180);
 		var pan = 0.5f + offset - (scale/2);
 		var srcRect = new Rect(0, pan, 1, scale);
-		Utility.DrawRotatedGuiTexture(destRect, roll, HorizonTexture, srcRect);
+		Utility.DrawRotatedGuiTexture(destRect, roll, HorizonTexture, srcRect, null);
 	}
 
 	void RenderCompass()
@@ -58,7 +58,7 @@ public class HudBasics : MonoBehaviour
 		
 		var pan = 0.5f + offset - (scale / 2);
 		var srcRect = new Rect(pan, 0, scale, 1);
-		Utility.DrawRotatedGuiTexture(destRect, 0, CompassTexture, srcRect);
+		Utility.DrawRotatedGuiTexture(destRect, 0, CompassTexture, srcRect, null);
 	}
 
 	void RenderSlip()

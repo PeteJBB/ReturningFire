@@ -26,13 +26,13 @@ public class Utility {
 		GUI.matrix = matrixBackup;
 	}
 
-	public static void DrawRotatedGuiTexture(Rect screenRect, float angle, Texture texture, Rect srcRect)
+	public static void DrawRotatedGuiTexture(Rect screenRect, float angle, Texture texture, Rect srcRect, Material mat)
 	{
 		if(Event.current.type == EventType.Repaint)
 		{
 			Matrix4x4 matrixBackup = GUI.matrix;
 			GUIUtility.RotateAroundPivot(angle, screenRect.center);
-			Graphics.DrawTexture(screenRect, texture, srcRect, 0, 0, 0, 0);
+			Graphics.DrawTexture(screenRect, texture, srcRect, 0, 0, 0, 0, mat);
 			GUI.matrix = matrixBackup;
 		}
 	}
