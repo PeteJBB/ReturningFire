@@ -56,9 +56,7 @@ public class TurretBase : MonoBehaviour
 	// Update is called once per frame
 	protected void Update () 
 	{
-		_detector.Origin = _launcher.transform.position;
-
-		if(_detector.CanSeePlayer)
+		if(_detector.CanSee(_player))
 		{
 			var vect = _player.transform.position - _launcher.position;
 			_lastSeenTime = Time.fixedTime;

@@ -47,6 +47,24 @@ public class Utility {
         return false;
     }
 
+	public static bool CanSeeBounds(Vector3 from, Bounds bounds, GameObject target)
+	{
+		RaycastHit hitInfo;
+		bool b = Physics.Linecast(from, bounds.center, out hitInfo);
+		if(!b || (target != null && hitInfo.collider.gameObject == target))
+			return true;
+
+		b = Physics.Linecast(from, bounds.max, out hitInfo);
+		if(!b || (target != null && hitInfo.collider.gameObject == target))
+			return true;
+
+		b = Physics.Linecast(from, bounds.min, out hitInfo);
+		if(!b || (target != null && hitInfo.collider.gameObject == target))
+			return true;
+
+		return false;
+	}
+
     public static bool CanObjectSeeAnother(GameObject a, GameObject b)
     {
         RaycastHit hitInfo;
