@@ -2,7 +2,9 @@ fileFormatVersion: 2
 guid: 7f20b665b7e0d594b86311b99b4333cb
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - CrosshairTexture: {fileID: 2800000, guid: dac560cd476e3be4a9c74539a6318421, type: 3}
+  - Rocket: {fileID: 100006, guid: e9c819a0737b6c4468ebce3eb09f0599, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
