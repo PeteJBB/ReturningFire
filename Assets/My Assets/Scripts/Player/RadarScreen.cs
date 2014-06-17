@@ -10,14 +10,45 @@ public class RadarScreen : MonoBehaviour
 
 	private Detector _detector;
 
+	private GameObject _mapCamGameObject;
+	private Camera _mapCam;
+
+	private Rect _radarRect;
+
 	void Start()
 	{
 		_detector = GetComponent<Detector>();
+
+//		_mapCamGameObject = new GameObject("MapCamera");
+//		_mapCam = _mapCamGameObject.AddComponent<Camera>();
+//		_mapCam.aspect = 1;
+//		_mapCam.isOrthoGraphic = true;
+//		_mapCam.orthographicSize = _detector.DetectionRange / 2;
+//		_mapCam.depth = 1;
+
 	}
+
+//	void Update()
+//	{
+//		var padding = 10f;
+//		_radarRect = new Rect(Screen.width - RadarSize.x - padding, padding, RadarSize.x, RadarSize.y);
+//
+//		var ratio = Screen.width / Screen.height;
+//		var height = RadarSize.y / Screen.height;
+//		var width = height / ratio;
+//		var px = 1f - (padding / Screen.width);
+//		var py = 1f - (padding / Screen.height);
+//		_mapCam.rect = new Rect(px - width, py - height, width, height);
+//
+//		var pos = transform.position;
+//		pos.y = 500;
+//		_mapCam.transform.position = pos;
+//		_mapCam.transform.rotation = Quaternion.Euler(90, transform.rotation.eulerAngles.y, 0);
+//	}
 
     void OnGUI()
     {
-		var radarRect = new Rect(Screen.width - RadarSize.x - 10, 10, RadarSize.x, RadarSize.y);
+		_radarRect = new Rect(Screen.width - RadarSize.x - 10, 10, RadarSize.x, RadarSize.y);
 
 		// draw background
 		var bgScale = new Vector2(_detector.DetectionRange / BackgroundMaterial.mainTexture.width, 
@@ -27,10 +58,10 @@ public class RadarScreen : MonoBehaviour
 
 		BackgroundMaterial.mainTextureScale = bgScale;
 		BackgroundMaterial.mainTextureOffset = bgOffset;
-		Utility.DrawRotatedGuiTexture(radarRect, -transform.rotation.eulerAngles.y, BackgroundMaterial.mainTexture, new Rect(0,0,1,1), BackgroundMaterial);
+		Utility.DrawRotatedGuiTexture(_radarRect, -transform.rotation.eulerAngles.y, BackgroundMaterial.mainTexture, new Rect(0,0,1,1), BackgroundMaterial);
 		
 		// draw overlay
-		GUI.DrawTexture(radarRect, OverlayTexture);
+		GUI.DrawTexture(_radarRect, OverlayTexture);
 
 		// calculate blip positions
 		var scale = RadarSize.x / 2 / _detector.DetectionRange;
@@ -58,13 +89,13 @@ public class RadarScreen : MonoBehaviour
 
 					var point = new Vector2(bX, bY) * scale;
 
-		            var blipRect = Utility.GetCenteredRectangle(radarRect.center + point, 12, 12);
+					var blipRect = Utility.GetCenteredRectangle(_radarRect.center + point, 12, 12);
 					var reverseDetector = obj.GetComponent<Detector>();
 					if(reverseDetector != null && reverseDetector.CanSee(gameObject))
 					{
 						GUI.color = Color.yellow;
 			            GUI.DrawTexture(blipRect, BlipTexture);
-						Drawing.DrawLine(radarRect.center, blipRect.center, Color.yellow, 1f, true);
+						Drawing.DrawLine(_radarRect.center, blipRect.center, Color.yellow, 1f, true);
 					}
 					else
 					{
