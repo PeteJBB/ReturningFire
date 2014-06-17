@@ -7,6 +7,8 @@ public class Targeting : MonoBehaviour
 	private float _rectSize = 30;
 	private float _animTime = 0.3f;
 
+	public Texture DetectedTargetTexture;
+
 	void Start()
 	{
 		_detector = GetComponent<Detector>();
@@ -36,11 +38,14 @@ public class Targeting : MonoBehaviour
 					var size = Mathf.Lerp(Screen.width, _rectSize, t);
 					var rect = Utility.GetCenteredRectangle(point, size, size);
 
-					// draw rect
-					Drawing.DrawLine(rect.min, new Vector2(rect.xMax, rect.yMin), color, 1, true);
-					Drawing.DrawLine(rect.min, new Vector2(rect.xMin, rect.yMax), color, 1, true);
-					Drawing.DrawLine(rect.max, new Vector2(rect.xMax, rect.yMin), color, 1, true);
-					Drawing.DrawLine(rect.max, new Vector2(rect.xMin, rect.yMax), color, 1, true);
+					if(Event.current.type == EventType.Repaint)
+						Graphics.DrawTexture(rect, DetectedTargetTexture, new Rect(0,0,1,1), 0,0,0,0, color);	
+
+					// draw full rect
+//					Drawing.DrawLine(rect.min, new Vector2(rect.xMax, rect.yMin), color, 1, true);
+//					Drawing.DrawLine(rect.min, new Vector2(rect.xMin, rect.yMax), color, 1, true);
+//					Drawing.DrawLine(rect.max, new Vector2(rect.xMax, rect.yMin), color, 1, true);
+//					Drawing.DrawLine(rect.max, new Vector2(rect.xMin, rect.yMax), color, 1, true);
 
 					// range label
 					GUI.TextField(new Rect(rect.xMin, rect.yMax + 2, 1, 1), vect.magnitude.ToString("0"), Utility.BasicGuiStyle);

@@ -36,7 +36,7 @@ public class FlightControls : MonoBehaviour
         // reset
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.LoadLevel("scene2");
+            Application.LoadLevel(Application.loadedLevelName);
         }
     }
 
